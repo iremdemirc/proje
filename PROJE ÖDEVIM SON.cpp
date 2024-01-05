@@ -1,122 +1,120 @@
 #include <stdio.h>
 
-
-struct Hesap {
-    int hesapNo;
-    char isim[50];
-    double bakiye;
+struct Account {
+    int accountNumber;
+    char name[50];
+    double balance;
 };
 
-
-void hesapOlustur(struct Hesap hesaplar[], int *hesapSayisi);
-void hesapListele(struct Hesap hesaplar[], int hesapSayisi);
-void paraYatir(struct Hesap hesaplar[], int hesapSayisi, int hesapNo, double miktar);
-void paraCek(struct Hesap hesaplar[], int hesapSayisi, int hesapNo, double miktar);
+void createAccount(struct Account accounts[], int *accountCount);
+void listAccounts(struct Account accounts[], int accountCount);
+void deposit(struct Account accounts[], int accountCount, int accountNumber, double amount);
+void withdraw(struct Account accounts[], int accountCount, int accountNumber, double amount);
 
 int main() {
-    struct Hesap hesaplar[100]; 
-    int hesapSayisi = 0;
-    int secim;
+    struct Account accounts[100];
+    int accountCount = 0;
+    int choice;
 
     do {
-        printf("\n1. Hesap Olustur\n");
-        printf("2. Hesap Listele\n");
-        printf("3. Para Yatir\n");
-        printf("4. Para Cek\n");
-        printf("0. Cikis\n");
-        printf("Seciminiz: ");
-        scanf("%d", &secim);
+        printf("\n1. Create Account\n");
+        printf("2. List Accounts\n");
+        printf("3. Deposit\n");
+        printf("4. Withdraw\n");
+        printf("0. Exit\n");
+        printf("Your choice: ");
+        scanf("%d", &choice);
 
-        switch (secim) {
+        switch (choice) {
             case 1:
-                hesapOlustur(hesaplar, &hesapSayisi);
+                createAccount(accounts, &accountCount);
                 break;
             case 2:
-                hesapListele(hesaplar, hesapSayisi);
+                listAccounts(accounts, accountCount);
                 break;
             case 3:
                 {
-                    int hesapNo;
-                    double miktar;
-                    printf("Hesap No: ");
-                    scanf("%d", &hesapNo);
-                    printf("Yatirilacak Miktar: ");
-                    scanf("%lf", &miktar);
-                    paraYatir(hesaplar, hesapSayisi, hesapNo, miktar);
+                    int accountNumber;
+                    double amount;
+                    printf("Account Number: ");
+                    scanf("%d", &accountNumber);
+                    printf("Amount to Deposit: ");
+                    scanf("%lf", &amount);
+                    deposit(accounts, accountCount, accountNumber, amount);
                 }
                 break;
             case 4:
                 {
-                    int hesapNo;
-                    double miktar;
-                    printf("Hesap No: ");
-                    scanf("%d", &hesapNo);
-                    printf("Cekilecek Miktar: ");
-                    scanf("%lf", &miktar);
-                    paraCek(hesaplar, hesapSayisi, hesapNo, miktar);
+                    int accountNumber;
+                    double amount;
+                    printf("Account Number: ");
+                    scanf("%d", &accountNumber);
+                    printf("Amount to Withdraw: ");
+                    scanf("%lf", &amount);
+                    withdraw(accounts, accountCount, accountNumber, amount);
                 }
                 break;
             case 0:
-                printf("Programdan cikiliyor...\n");
+                printf("Exiting the program...\n");
                 break;
             default:
-                printf("Gecersiz secim. Tekrar deneyin.\n");
+                printf("Invalid choice. Please try again.\n");
         }
-    } while (secim != 0);
+    } while (choice != 0);
 
     return 0;
 }
 
-void hesapOlustur(struct Hesap hesaplar[], int *hesapSayisi) {
-    if (*hesapSayisi < 100) {
-        printf("Isim: ");
-        scanf("%s", hesaplar[*hesapSayisi].isim);
-        hesaplar[*hesapSayisi].hesapNo = *hesapSayisi + 1;
-        hesaplar[*hesapSayisi].bakiye = 0.0;
-        (*hesapSayisi)++;
-        printf("Hesap olusturuldu.\n");
+void createAccount(struct Account accounts[], int *accountCount) {
+    if (*accountCount < 100) {
+        printf("Name: ");
+        scanf("%s", accounts[*accountCount].name);
+        accounts[*accountCount].accountNumber = *accountCount + 1;
+        accounts[*accountCount].balance = 0.0;
+        (*accountCount)++;
+        printf("Account created.\n");
     } else {
-        printf("Maximum hesap sayisina ulasildi.\n");
+        printf("Maximum account limit reached.\n");
     }
 }
 
-void hesapListele(struct Hesap hesaplar[], int hesapSayisi) {
-    printf("\nHesap Listesi:\n");
+void listAccounts(struct Account accounts[], int accountCount) {
+    printf("\nAccount List:\n");
     printf("-------------------------------------------------\n");
-    printf("| Hesap No | Isim          | Bakiye           |\n");
+    printf("| Account No | Name          | Balance          |\n");
     printf("-------------------------------------------------\n");
 
-    for (int i = 0; i < hesapSayisi; i++) {
-        printf("| %-8d | %-13s | %-16.2f |\n", hesaplar[i].hesapNo, hesaplar[i].isim, hesaplar[i].bakiye);
+    for (int i = 0; i < accountCount; i++) {
+        printf("| %-11d | %-13s | %-16.2f |\n", accounts[i].accountNumber, accounts[i].name, accounts[i].balance);
     }
 
     printf("-------------------------------------------------\n");
 }
 
-void paraYatir(struct Hesap hesaplar[], int hesapSayisi, int hesapNo, double miktar) {
-    for (int i = 0; i < hesapSayisi; i++) {
-        if (hesaplar[i].hesapNo == hesapNo) {
-            hesaplar[i].bakiye += miktar;
-            printf("%.2f TL yatirildi. Yeni bakiye: %.2f TL\n", miktar, hesaplar[i].bakiye);
+void deposit(struct Account accounts[], int accountCount, int accountNumber, double amount) {
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].accountNumber == accountNumber) {
+            accounts[i].balance += amount;
+            printf("%.2f deposited. New balance: %.2f\n", amount, accounts[i].balance);
             return;
         }
     }
 
-    printf("Hesap bulunamadi.\n");
+    printf("Account not found.\n");
 }
 
-void paraCek(struct Hesap hesaplar[], int hesapSayisi, int hesapNo, double miktar) {
-    for (int i = 0; i < hesapSayisi; i++) {
-        if (hesaplar[i].hesapNo == hesapNo) {
-            if (hesaplar[i].bakiye >= miktar) {
-                hesaplar[i].bakiye -= miktar;
-                printf("%.2f TL cekildi. Yeni bakiye: %.2f TL\n", miktar, hesaplar[i].bakiye);
+void withdraw(struct Account accounts[], int accountCount, int accountNumber, double amount) {
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].accountNumber == accountNumber) {
+            if (accounts[i].balance >= amount) {
+                accounts[i].balance -= amount;
+                printf("%.2f withdrawn. New balance: %.2f\n", amount, accounts[i].balance);
             } else {
-                printf("Yetersiz bakiye. Islem iptal edildi.\n");
+                printf("Insufficient balance. Transaction canceled.\n");
             }
             return;
         }
     }
 
-    printf("Hesap bulunamadi.\n");
+    printf("Account not found.\n");
 }
